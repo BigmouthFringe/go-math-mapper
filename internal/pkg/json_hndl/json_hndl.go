@@ -6,10 +6,15 @@ package json_hndl
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
+)
+
+var (
+	ErrInvalidArgs = errors.New("invalid arguments")
 )
 
 type Job struct {
@@ -28,7 +33,7 @@ func HandleJSON(callback func(jobs []Job, output string)) {
 	for scanner.Scan() {
 		inpParams := strings.Split(scanner.Text(), " ")
 		if len(inpParams) < 2 {
-			fmt.Println("unable to work with less than 2 arguments")
+			fmt.Println(ErrInvalidArgs.Error())
 			continue
 		}
 
