@@ -1,20 +1,15 @@
 package main
 
 import (
+	"../../internal/pkg/job_processor"
 	"../../internal/pkg/json_hndl"
-	"../../internal/pkg/math_facade"
 	"fmt"
 )
 
 func main() {
 	json_hndl.HandleJSON(func(jobs []json_hndl.Job, output string) {
-		for _, job := range jobs {
-			copyJob := job
-			go func() {
-				div, error := math_facade.Div(copyJob.Arg1, copyJob.Arg2)
-				fmt.Println(div, " ", error)
-			}()
-		}
+		report := job_processor.ProcessJobs(&jobs)
+		json_hndl.WriteJSON(report, output)
+		fmt.Println("Done")
 	})
-	// TODO: Add output extracting here
 }

@@ -20,10 +20,10 @@ func init() {
 	math = lib
 }
 
-func Div(arg1, arg2 int) (div int, error string) {
+func Div(arg1, arg2 int) int {
 	proc, _ := syscall.GetProcAddress(math, "Div")
-	divPtr, _, err := syscall.Syscall(uintptr(proc), 0, uintptr(arg1), uintptr(arg2), 0)
-	return int(divPtr), err.Error()
+	divPtr, _, _ := syscall.Syscall(uintptr(proc), 0, uintptr(arg1), uintptr(arg2), 0)
+	return int(divPtr)
 }
 
 // TODO: Move to global helpers
