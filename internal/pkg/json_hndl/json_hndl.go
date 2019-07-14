@@ -44,6 +44,7 @@ func HandleJSON(callback func(jobs []Job, output string)) {
 			continue
 		}
 
+		// TODO: Ensure correct object
 		var jobs []Job
 		err = json.Unmarshal([]byte(file), &jobs)
 		if err != nil {
