@@ -11,11 +11,12 @@ import (
 var math syscall.Handle
 
 func init() {
-	dllFile := fmt.Sprintf("internal/pkg/math_facade/math_x%d", getOsBitVersion())
+	dllFile := fmt.Sprintf("pkg/math/math_x%d.dll", getOsBitVersion())
 	absPath, _ := filepath.Abs(dllFile)
 	lib, err := syscall.LoadLibrary(absPath)
 	if err != nil {
-		log.Fatal("load: ", err)
+		context := fmt.Sprintf("load %s: ", absPath)
+		log.Fatal(context, err)
 	}
 	math = lib
 }
