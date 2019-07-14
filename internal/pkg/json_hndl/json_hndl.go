@@ -34,7 +34,6 @@ func HandleJSON(callback func(jobs []Job, output string)) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		inpParams := strings.Split(scanner.Text(), " ")
-		// TODO: Write Test
 		if len(inpParams) < 2 {
 			fmt.Println(ErrInvalidArgs.Error())
 			continue
