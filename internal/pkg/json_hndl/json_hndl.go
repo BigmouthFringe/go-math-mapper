@@ -12,7 +12,10 @@ import (
 
 var osFileMode = os.FileMode.Perm(0644)
 
-var ErrInvalidArgs = errors.New("invalid arguments")
+var (
+	ErrTooFewArgs      = errors.New("there should be at least 2 arguments")
+	ErrInvalidFileName = errors.New("invalid file name")
+)
 
 type Job struct {
 	Arg1 int `json:"arg1"`
@@ -33,13 +36,13 @@ func HandleJSON(callback func(jobs []Job, output string)) {
 	fmt.Println("Mind that input file should be in JSON format")
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		inpParams := strings.Split(scanner.Text(), " ")
-		if len(inpParams) < 2 {
-			fmt.Println(ErrInvalidArgs.Error())
+		params := strings.Split(scanner.Text(), " ")
+		if err := assertValidParams(params); err != nil {
+			fmt.Println(err.Error())
 			continue
 		}
 
-		input, output := inpParams[0], inpParams[1]
+		input, output := params[0], params[1]
 		file, err := ioutil.ReadFile(input)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -60,12 +63,22 @@ func HandleJSON(callback func(jobs []Job, output string)) {
 func WriteJSON(report *[]JobReport, output string) {
 	json, err := json.MarshalIndent(report, "", "\t")
 	if err != nil {
-		fmt.Println("JSON marshal: ", err)
+		fmt.Println("JSON marshal: ", err.Error())
 		return
 	}
 	err = ioutil.WriteFile(output, json, osFileMode)
 	if err != nil {
-		fmt.Println("write JSON file: ", err)
+		fmt.Println("write JSON file: ", err.Error())
 		return
 	}
+}
+
+func assertValidParams(params []string) error {
+	if len(params) < 2 {
+		return ErrTooFewArgs
+	}
+	if params[0] == "" || params[1] == "" {
+		return ErrInvalidFileName
+	}
+	return nil
 }
