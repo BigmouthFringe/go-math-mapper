@@ -1,21 +1,19 @@
 package math_facade
 
 import (
+	"../env_helpers"
 	"fmt"
 	"log"
-	"path/filepath"
-	"strconv"
 	"syscall"
 )
 
 var math syscall.Handle
 
 func init() {
-	dllFile := fmt.Sprintf("pkg/math/math_x%d.dll", getOsBitVersion())
-	absPath, _ := filepath.Abs(dllFile)
-	lib, err := syscall.LoadLibrary(absPath)
+	dllFile := fmt.Sprintf("%s/pkg/math/math_x%d.dll", env_helpers.GetGOPATH(), env_helpers.GetOsBitVersion())
+	lib, err := syscall.LoadLibrary(dllFile)
 	if err != nil {
-		context := fmt.Sprintf("load %s: ", absPath)
+		context := fmt.Sprintf("load %s: ", dllFile)
 		log.Fatal(context, err)
 	}
 	math = lib
@@ -25,12 +23,4 @@ func Div(arg1, arg2 int) int {
 	proc, _ := syscall.GetProcAddress(math, "Div")
 	divPtr, _, _ := syscall.Syscall(uintptr(proc), 0, uintptr(arg1), uintptr(arg2), 0)
 	return int(divPtr)
-}
-
-// TODO: Move to global helpers
-func getOsBitVersion() int {
-	if strconv.IntSize == 32 {
-		return 86
-	}
-	return 64
 }
