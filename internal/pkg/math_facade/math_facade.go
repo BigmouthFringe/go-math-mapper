@@ -10,7 +10,7 @@ import (
 var math syscall.Handle
 
 func init() {
-	dllFile := fmt.Sprintf("%s/pkg/math/math_x%d.dll", env_helpers.GetGOPATH(), env_helpers.GetOsBitVersion())
+	dllFile := fmt.Sprintf("%s/pkg/math/math_x%d.dll", env_helpers.GetRootPath(), env_helpers.GetOsBitVersion())
 	lib, err := syscall.LoadLibrary(dllFile)
 	if err != nil {
 		context := fmt.Sprintf("load %s: ", dllFile)
